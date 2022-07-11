@@ -1,0 +1,178 @@
+<div class="container">
+  <!-- <header> -->
+    <div class="pb-md-3 mx-auto text-center">
+      <span class="display-5 fw-normal">Performance Comercial</span>
+      <!-- <p class="fs-5 text-muted">An&aacute;lisis del performance de los consultores.</p> -->
+    </div>
+  <!-- </header> -->
+
+  <main>
+    <div class="row row-cols-12 mb-12">
+
+      <div class="col">
+        <div class="card mb-12 rounded-3 shadow-sm">
+          <div class="card-header text-center">
+            <h5 class="my-0 fw-normal">Por Consultores</h5>
+          </div>
+
+          <div class="card-body">
+
+            <div class="row">
+              <div class="col-3">
+                <div class="card mb-12 rounded-3 shadow-sm border-primary">
+                  <div class="card-header text-center text-white bg-primary">
+                    <span class="my-0 fw-normal">Listado de Consultores</span>
+                    <!-- <button class="btn btn-flat">Refresh</button> -->
+                  </div>
+                  <div class="card-body" style="min-height: 300px;">
+                    <!-- List of consultants -->
+                    <div class="list-group list-group-adjust" *ngIf="consultants.length > 0">
+                      <label class="list-group-item" *ngFor="let user of consultants">
+                        <input class="form-check-input me-1" type="checkbox" [(ngModel)]="user.selected"> {{user.name}}
+                      </label>
+                    </div>
+
+                    <!-- Not results -->
+                    <ul class="list-group" *ngIf="consultants.length == 0 && !loading">
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                        No esiten datos para mostrar
+                      </li>
+                    </ul>
+                    <!-- Fetching data -->
+                    <ul class="list-group" *ngIf="consultants.length == 0 && loading">
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Obteniendo datos...
+                        <span class="badge bg-primary rounded-pill">spinner</span>
+                      </li>
+                    </ul>
+
+                  </div>
+                </div>
+              </div>
+            
+              
+              <div class="col-9">
+                <div class="row">
+
+                  <div class="col-6">
+                    <div class="input-group">
+                      <span class="input-group-text">Periodo:</span>
+                      <select class="form-control" [(ngModel)]="initMonth">
+                        <option *ngFor="let m of months" [ngValue]="m.id">{{m.value}}</option>
+                      </select>
+                      <select class="form-control" [(ngModel)]="initYear">
+                        <option *ngFor="let y of years" [ngValue]="y">{{y}}</option>
+                      </select>
+
+                      <span class="input-group-text"> a </span>
+
+                      <select class="form-control" [(ngModel)]="endMonth">
+                        <option *ngFor="let m of months" [ngValue]="m.id">{{m.value}}</option>
+                      </select>
+                      <select class="form-control" [(ngModel)]="endYear">
+                        <option *ngFor="let y of years" [ngValue]="y">{{y}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <!-- Botones de acciones -->
+                  <div class="col-6">
+                    <div class="btn-group" role="group">
+                      <button type="button" class="btn btn-outline-secondary" (click)="getEarnings()">
+                        Ganancias
+                      </button>
+                      <button type="button" class="btn btn-outline-secondary" (click)="getGraphic()">
+                        Gr&aacute;fico
+                      </button>
+                      <button type="button" class="btn btn-outline-secondary" (click)="getPizzas()">
+                        Pizza
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Resultados del boton Relatorio -->
+                  <div class="row mt-3" *ngIf="showEarnings && !loading">
+                    <div class="col">
+                      
+                      <!-- List of consultants -->
+                      <table class="table table-hover table-bordered" *ngFor="let sel of earnings">
+                        <thead class="table-light">
+                          <tr>
+                            <th colspan="5"><span class="my-0 fw-normal"><strong>{{sel.name}}</strong></span></th>
+                          </tr>
+                          <tr>
+                            <td class="text-center" scope="col" width="20%">Periodo</td>
+                            <td class="text-center" scope="col" width="20%">Ganancia L&iacute;quida</td>
+                            <td class="text-center" scope="col" width="20%">Costo Fijo</td>
+                            <td class="text-center" scope="col" width="20%">Comisi&oacute;n</td>
+                            <td class="text-center" scope="col" width="20%">Lucro</td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let data of sel.earnings; let first = first; let last = last;"
+                            [ngClass]="{'table-light': last}">
+                            <td [ngClass]="{'text-center': last}">{{first ? getInitPeriodo() : !last ? getEndPeriodo() : 'SALDO'}}</td>
+                            <td class="text-end">{{data.netEarning | currency}}</td>
+                            <td class="text-end">{{data.fixedCost | currency}}</td>
+                            <td class="text-end">{{data.commission | currency}}</td>
+                            <td class="text-end">{{data.profit | currency}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+                    </div>
+                  </div>
+
+                  <!-- Resultados del boton Graphic -->
+                  <div class="row" *ngIf="showGraphics">
+                    <div class="col">
+
+                      <div class="container">
+                        <h3 class="mt-2">{{ barTitle }}</h3>
+                        <div class="row">
+                          <highcharts-chart 
+                            [Highcharts] = "barsCharts"
+                            [options] = "barsOptions">
+                          </highcharts-chart>
+                        </div>
+                      </div>
+                      
+                    </div>
+                  </div>
+
+                  <!-- Resultados del boton Pizza -->
+                  <div class="row" *ngIf="showPizzas">
+                    <div class="col">
+
+                      <div class="container">
+                        <h3 class="mt-2">{{ pieTitle }}</h3>
+                        <div class="row">
+                          <div class="col-sm">
+                            <highcharts-chart [Highcharts]="piesCharts" [options]="piesOptions"></highcharts-chart>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+  <div class="spinner-border text-light" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <!-- <p style="color: white">Please Wait. </p> -->
+</ngx-spinner>
