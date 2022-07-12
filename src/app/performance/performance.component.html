@@ -9,7 +9,7 @@
   <main>
     <div class="row row-cols-12 mb-12">
 
-      <div class="col">
+      <div class="col-md">
         <div class="card mb-12 rounded-3 shadow-sm">
           <div class="card-header text-center">
             <h5 class="my-0 fw-normal">Por Consultores</h5>
@@ -18,13 +18,13 @@
           <div class="card-body">
 
             <div class="row">
-              <div class="col-3">
+              <div class="col-md-12 col-lg-3 mb-3">
                 <div class="card mb-12 rounded-3 shadow-sm border-primary">
                   <div class="card-header text-center text-white bg-primary">
                     <span class="my-0 fw-normal">Listado de Consultores</span>
                     <!-- <button class="btn btn-flat">Refresh</button> -->
                   </div>
-                  <div class="card-body" style="min-height: 300px;">
+                  <div class="card-body">
                     <!-- List of consultants -->
                     <div class="list-group list-group-adjust" *ngIf="consultants.length > 0">
                       <label class="list-group-item" *ngFor="let user of consultants">
@@ -42,7 +42,6 @@
                     <ul class="list-group" *ngIf="consultants.length == 0 && loading">
                       <li class="list-group-item d-flex justify-content-between align-items-center">
                         Obteniendo datos...
-                        <span class="badge bg-primary rounded-pill">spinner</span>
                       </li>
                     </ul>
 
@@ -51,11 +50,12 @@
               </div>
             
               
-              <div class="col-9">
-                <div class="row">
+              <div class="col-md-9">
 
-                  <div class="col-6">
-                    <div class="input-group">
+                <div class="row">
+                  <!-- Selectores -->
+                  <div class="col-sm-12 col-md-9 col-lg-7">
+                    <div class="input-group mb-3">
                       <span class="input-group-text">Periodo:</span>
                       <select class="form-control" [(ngModel)]="initMonth">
                         <option *ngFor="let m of months" [ngValue]="m.id">{{m.value}}</option>
@@ -74,10 +74,9 @@
                       </select>
                     </div>
                   </div>
-                  
                   <!-- Botones de acciones -->
-                  <div class="col-6">
-                    <div class="btn-group" role="group">
+                  <div class="col-sm-12 col-md-3 col-lg-3 text-center">
+                    <div class="btn-group mb-3" role="group">
                       <button type="button" class="btn btn-outline-secondary" (click)="getEarnings()">
                         Ganancias
                       </button>
@@ -89,23 +88,25 @@
                       </button>
                     </div>
                   </div>
+                </div>
 
+                <div class="row">
                   <!-- Resultados del boton Relatorio -->
-                  <div class="row mt-3" *ngIf="showEarnings && !loading">
-                    <div class="col">
-                      
+                  <div class="col" *ngIf="showEarnings && !loading">
+                    
+                    <div class="table-responsive" *ngFor="let sel of earnings">
                       <!-- List of consultants -->
-                      <table class="table table-hover table-bordered" *ngFor="let sel of earnings">
+                      <table class="table table-hover table-bordered ">
                         <thead class="table-light">
                           <tr>
                             <th colspan="5"><span class="my-0 fw-normal"><strong>{{sel.name}}</strong></span></th>
                           </tr>
                           <tr>
-                            <td class="text-center" scope="col" width="20%">Periodo</td>
-                            <td class="text-center" scope="col" width="20%">Ganancia L&iacute;quida</td>
-                            <td class="text-center" scope="col" width="20%">Costo Fijo</td>
-                            <td class="text-center" scope="col" width="20%">Comisi&oacute;n</td>
-                            <td class="text-center" scope="col" width="20%">Lucro</td>
+                            <td class="text-center" style="min-width:150px;">Periodo</td>
+                            <td class="text-center" style="min-width:200px;">Ganancia L&iacute;quida</td>
+                            <td class="text-center" style="min-width:150px;">Costo Fijo</td>
+                            <td class="text-center" style="min-width:200px;">Comisi&oacute;n</td>
+                            <td class="text-center" style="min-width:200px;">Lucro</td>
                           </tr>
                         </thead>
                         <tbody>
@@ -119,44 +120,42 @@
                           </tr>
                         </tbody>
                       </table>
-
                     </div>
+
                   </div>
 
                   <!-- Resultados del boton Graphic -->
-                  <div class="row" *ngIf="showGraphics">
-                    <div class="col">
+                  <div class="col" *ngIf="showGraphics && !loading">
 
-                      <div class="container">
-                        <h3 class="mt-2">{{ barTitle }}</h3>
-                        <div class="row">
-                          <highcharts-chart 
-                            [Highcharts] = "barsCharts"
-                            [options] = "barsOptions">
-                          </highcharts-chart>
-                        </div>
-                      </div>
-                      
+                    <div class="container-flex">
+                      <!-- <div class="row"> -->
+                        <highcharts-chart 
+                          [Highcharts] = "barsCharts"
+                          [options] = "barsOptions">
+                        </highcharts-chart>
+                      <!-- </div> -->
                     </div>
+                    
                   </div>
 
                   <!-- Resultados del boton Pizza -->
-                  <div class="row" *ngIf="showPizzas">
-                    <div class="col">
+                  <div class="col" *ngIf="showPizzas && !loading">
 
-                      <div class="container">
-                        <h3 class="mt-2">{{ pieTitle }}</h3>
-                        <div class="row">
-                          <div class="col-sm">
-                            <highcharts-chart [Highcharts]="piesCharts" [options]="piesOptions"></highcharts-chart>
-                          </div>
-                        </div>
-                      </div>
+                    <!-- <div class="container"> -->
+                      <!-- <div class="row"> -->
+                        <!-- <div class="col-sm"> -->
+                          <highcharts-chart 
+                            [Highcharts]="piesCharts"
+                            [options]="piesOptions">
+                          </highcharts-chart>
+                        <!-- </div> -->
+                      <!-- </div> -->
+                    <!-- </div> -->
 
-                    </div>
                   </div>
 
                 </div>
+
               </div>
             </div>
 
