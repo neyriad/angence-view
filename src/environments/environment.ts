@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: "https://localhost:44339/api/performance"
+  apiUrl: "https://bsite.net/Neyriad/api/performance"
 };
 
 /*

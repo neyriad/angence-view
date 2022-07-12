@@ -29,7 +29,11 @@ export class PerformanceService {
     return this._httpClient.post<Earnings[]>(`${this._apiUrl}/earnings`, filter, { headers: this._headers });
   }
 
-  public getRangeCalculation(filter: any): Observable<PerformanceDto> {
-    return this._httpClient.post<PerformanceDto>(`${this._apiUrl}/bymonth`, filter, { headers: this._headers });
+  public getBillingInRange(filter: any): Observable<PerformanceDto> {
+    return this._httpClient.post<PerformanceDto>(`${this._apiUrl}/month_range`, filter, { headers: this._headers });
+  }
+
+  public getBillingForPercentage(filter: any): Observable<PerformanceDto> {
+    return this._httpClient.post<PerformanceDto>(`${this._apiUrl}/percentage`, filter, { headers: this._headers });
   }
 }
