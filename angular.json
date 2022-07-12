@@ -99,6 +99,7 @@
       }
     }
   },
+  "defaultProject": "angence-view",
   "cli": {
     "analytics": false
   }
